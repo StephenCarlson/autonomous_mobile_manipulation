@@ -22,11 +22,14 @@
   <exec_depend>std_msgs</exec_depend>
   <!-- <exec_depend>roslaunch</exec_depend> -->
 
+
+  <!-- MoveIt Dependencies
   <build_depend>moveit_core</build_depend>
   <build_depend>moveit_ros_planning</build_depend>
   <build_depend>moveit_ros_planning_interface</build_depend>
   <build_depend>moveit_visual_tools</build_depend>
   <build_depend>rviz_visual_tools</build_depend>
+  -->
 
 
   <!-- Reserve/Reference
@@ -41,10 +44,6 @@
   <exec_depend>rviz_visual_tools</exec_depend>
   <exec_depend>joy</exec_depend>
 
-
-
-
-
   <build_depend>roslaunch</build_depend>
   <run_depend>interactive_marker_twist_server</run_depend>
   <run_depend>diff_drive_controller</run_depend>
@@ -56,9 +55,6 @@
   <run_depend>controller_manager</run_depend>
   <run_depend>teleop_twist_joy</run_depend>
   <run_depend>twist_mux</run_depend>
-
-
-
 
   <build_depend>message_generation</build_depend>
   <build_depend>roscpp</build_depend>

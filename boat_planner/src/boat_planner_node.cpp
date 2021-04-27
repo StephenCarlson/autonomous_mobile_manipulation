@@ -1,4 +1,5 @@
-# include <ros/ros.h>
+#include <ros/ros.h>
+// #include "ros/ros.h"
 
 // #include <boat_planner/boat_planner.h>
 
@@ -18,7 +19,9 @@ int main(int argc, char* argv[])
     // ros::waitForShutdown();
 
 
-    ROS_INFO("boat_planner is properly compiled if this is visible.");
+
+
+    ROS_INFO("boat_planner is properly compiled if this message is visible.");
 
     ros::spin();
 
