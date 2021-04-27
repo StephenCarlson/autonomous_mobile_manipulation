@@ -206,47 +206,6 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='iscas_museum'>
-      <link name='link'>
-        <inertial>
-          <mass>15</mass>
-        </inertial>
-        <collision name='collision'>
-          <pose frame=''>0 0 0 0 0 -1.57</pose>
-          <geometry>
-            <mesh>
-              <uri>model://iscas_museum/meshes/ISCAS_museum.dae</uri>
-            </mesh>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <pose frame=''>0 0 0 0 0 -1.57</pose>
-          <geometry>
-            <mesh>
-              <uri>model://iscas_museum/meshes/ISCAS_museum.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <static>1</static>
-      <pose frame=''>2.73769 -7.82008 0 0 -0 0</pose>
-    </model>
     <model name='boat'>
       <pose frame=''>0.815146 -0.074445 0 0 -0 0</pose>
       <static>1</static>
