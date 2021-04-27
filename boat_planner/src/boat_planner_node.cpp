@@ -5,7 +5,7 @@
 int main(int argc, char* argv[])
 {
 
-    ros::init(argc, argv, "boat_planner");
+    ros::init(argc, argv, "boat_planner_node");
 
     // ros::AsyncSpinner spinner(2); // TODO: Examples have 1, but move_group fails with: "Didn't received robot state (joint angles) with recent timestamp within 1 seconds." (see: https://github.com/ros-planning/moveit/issues/868)
     // spinner.start();

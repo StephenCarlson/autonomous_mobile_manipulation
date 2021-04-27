@@ -1,6 +1,5 @@
 
 # Udacity Course Leftovers
-
 # project(ball_chaser)
 # add_definitions(-std=c++11) 
 # add_compile_options(-std=c++11)
@@ -58,13 +57,79 @@
 
 
 
+
+
+
+
+
+
+
+# Pieces of CMakeLists.txt from the robowork folders
+# cmake_minimum_required(VERSION 2.8.3)
+# project(robowork_planning)
+# 
+# set(CMAKE_CXX_STANDARD 14)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_EXTENSIONS OFF) #-std=c++14 vs -std=gnu++14
+
+
+
+
+
+
+
+
+
+
+
+
 # Combined Version
-include_directories(include ${catkin_INCLUDE_DIRS})
+cmake_minimum_required(VERSION 2.8.3)
+project(boat_planner)
+# add_definitions(-std=c++11) 
+# add_compile_options(-std=c++11)
+# include_directories(include ${catkin_INCLUDE_DIRS})
+# set(CMAKE_CXX_STANDARD 14)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_EXTENSIONS OFF) #-std=c++14 vs -std=gnu++14
+find_package(catkin REQUIRED COMPONENTS 
+  roslaunch
+  # message_generation
+  # nodelet
+  roscpp
+  std_msgs
+  # geometry_msgs
+)
+
+## Generate services in the 'srv' folder
+# add_service_files(
+#   FILES
+#   DriveToTarget.srv
+# )
+## Generate added messages and services with any dependencies listed here
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+# )
+
+
+catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES boat_planner
+#  CATKIN_DEPENDS message_generation roscpp std_msgs
+#  DEPENDS system_lib
+)
+
+
+# include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(boat_planner_node boat_planner_node.cpp)
 
+## Specify libraries to link a library or executable target against
+# target_link_libraries(boat_planner_node ${catkin_LIBRARIES})
 
+# add_dependencies(boat_planner_node boat_planner_generate_messages_cpp)
 
-
-
-
+# install(DIRECTORY config launch scripts
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
