@@ -13,10 +13,12 @@
     <param name="arm_namespace" value="$(arg arm_namespace)" />
     <param name="sim_suffix" value="$(arg sim_suffix)" />
 
+    <!-- 
     <param name="allow_trajectory_execution" value="$(arg allow_trajectory_execution)"/>
     <param name="max_safe_path_cost" value="$(arg max_safe_path_cost)"/>
     <param name="jiggle_fraction" value="$(arg jiggle_fraction)" />
     <param name="max_sampling_attempts" value="$(arg max_sampling_attempts)" />
+    -->
   </node>
   
 </launch>
