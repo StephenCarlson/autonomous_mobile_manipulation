@@ -90,6 +90,7 @@
       <background>0.7 0.7 0.7 1</background>
       <shadows>1</shadows>
     </scene>
+    <!--
     <model name='asphalt_plane'>
       <static>1</static>
       <link name='link'>
@@ -139,11 +140,13 @@
       </link>
       <pose frame=''>-0.464139 0 0 0 -0 0</pose>
     </model>
+    -->
     <state world_name='default'>
       <sim_time>2095 335000000</sim_time>
       <real_time>76 851968901</real_time>
       <wall_time>1613103001 893717881</wall_time>
       <iterations>11108</iterations>
+      <!-- 
       <model name='asphalt_plane'>
         <pose frame=''>3.20277 -7.0229 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -154,6 +157,7 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
+      -->
       <model name='boat'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -169,16 +173,6 @@
         <scale>1 1 1</scale>
         <link name='link'>
           <pose frame=''>0 0 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='iscas_museum'>
-        <pose frame=''>2.73769 -7.82008 0 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>2.73769 -7.82008 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
