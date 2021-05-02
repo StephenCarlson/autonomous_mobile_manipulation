@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 // #include "ros/ros.h"
 
-// #include <boat_planner/boat_planner.h>
+#include <boat_planner/MGI_BoatPlanner.h>
 
 // #include <moveit/move_group/node_name.h>
 // 
@@ -54,8 +54,8 @@ int main(int argc, char* argv[]) {
 
     // http://wiki.ros.org/navigation/Tutorials/SendingSimpleGoals
 
-    typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
-    MoveBaseClient ac("move_base", true);
+    // typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+    // MoveBaseClient ac("move_base", true);
     // while(!ac.waitForServer(ros::Duration(5.0))) {
     //     ROS_INFO("Waiting for the move_base action server to come up");
     // }
@@ -75,5 +75,30 @@ int main(int argc, char* argv[]) {
 
     // ros::spin();
 
+
+    // Hopefully this is as good as any place to put the instructions:
+    // Terminal 1: cd /autonomous_mobile_manipulation_ws, source devel/setup.bash .
+    // Then: roslaunch robowork_gazebo bvr_SIM_playpen.launch
+    // Terminal 2: Same steps of cd and source, then:
+    // ROS_NAMESPACE="bvr_SIM" roslaunch robowork_moveit_config robowork_moveit_planning_execution.launch robot_namespace:=bvr_SIM arm_namespace:=main_arm_SIM sim_suffix:=_SIM
+    // Terminal 3: Same steps of cd and source, then:
+    // ROS_NAMESPACE="bvr_SIM" roslaunch boat_planner main.launch robot_namespace:=bvr_SIM arm_namespace:=main_arm_SIM sim_suffix:=_SIM
+    // The arm should move to the point infront of the robot.
+
+
+
+
+
+    ros::AsyncSpinner spinner(2); // TODO: Examples have 1, but move_group fails with: "Didn't received robot state (joint angles) with recent timestamp within 1 seconds." (see: https://github.com/ros-planning/moveit/issues/868)
+    spinner.start();
+
+    ros::NodeHandle nh;
+    ros::NodeHandle pnh("~");
+
+    move_group_interface::MGI_BoatPlanner move_group_interface_BoatPlanner(nh, pnh, "map");
+
+    // move_group_interface::MGI_BoatPlanner hardcoded_3d_cb();
+  
+    ros::waitForShutdown();
     return 0;
 }
