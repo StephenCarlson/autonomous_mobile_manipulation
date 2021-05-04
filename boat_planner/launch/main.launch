@@ -8,6 +8,8 @@
 
   <arg name="debug" default="false" />
 
+  <rosparam command="load" file="$(find boat_planner)/config/points.yaml"/>
+
   <node name="boat_planner" pkg="boat_planner" type="boat_planner_node" output="screen">
     <param name="robot_namespace" value="$(arg robot_namespace)" />
     <param name="arm_namespace" value="$(arg arm_namespace)" />

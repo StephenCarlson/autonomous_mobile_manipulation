@@ -95,7 +95,78 @@ int main(int argc, char* argv[]) {
     ros::NodeHandle nh;
     ros::NodeHandle pnh("~");
 
-    move_group_interface::MGI_BoatPlanner move_group_interface_BoatPlanner(nh, pnh, "map");
+    // move_group_interface::MGI_BoatPlanner move_group_interface_BoatPlanner(nh, pnh, "map");
+
+    // std::vector<std::map<std::string,std::string>> points_list;
+    std::vector<std::vector<double>> waypoints_list;
+
+    XmlRpc::XmlRpcValue xml_points_list;
+    nh.getParam("waypoint_list", xml_points_list);
+    // ROS_INFO("XML Type: %d", xml_points_list.getType());
+
+    if(xml_points_list.getType() != XmlRpc::XmlRpcValue::TypeArray ) {
+        ROS_ERROR("param 'waypoint_list' is not a list");
+    } else {
+        for(int i=0; i<xml_points_list.size(); i++) {
+            // ROS_INFO("Line %d: XML Type: %d", i, xml_points_list[i].getType());
+            if( xml_points_list[i].getType() != XmlRpc::XmlRpcValue::TypeArray) {
+            // if( xml_points_list[i].getType() != XmlRpc::XmlRpcValue::TypeStruct) {
+                ROS_ERROR("waypoint_list[%d] is not a struct", i);
+            } else {
+                // ROS_INFO("Line %d: XML Type: %d", i, xml_points_list[i]["base_pos_x"].getType());
+                // ROS_INFO("Line %d: XML Type: %d", i, xml_points_list[i].hasMember("base_pos_x"));
+
+                std::vector<double> waypoint;
+
+                // waypoint.push_back(xml_points_list[i]["base_pos_x"]);
+                // waypoint.push_back(xml_points_list[i]["base_pos_y"]);
+                // waypoint.push_back(xml_points_list[i]["eff_pos_x"]);
+                // waypoint.push_back(xml_points_list[i]["eff_pos_y"]);
+                // waypoint.push_back(xml_points_list[i]["eff_pos_z"]);
+                // waypoint.push_back(xml_points_list[i]["eff_orint_x"]);
+                // waypoint.push_back(xml_points_list[i]["eff_orint_y"]);
+                // waypoint.push_back(xml_points_list[i]["eff_orint_z"]);
+                // waypoint.push_back(xml_points_list[i]["eff_orint_w"]);
+
+                waypoint.push_back(xml_points_list[i][0]);
+                waypoint.push_back(xml_points_list[i][1]);
+                waypoint.push_back(xml_points_list[i][2]);
+                // waypoint.push_back(xml_points_list[i][3]);
+                // waypoint.push_back(xml_points_list[i][4]);
+                // waypoint.push_back(xml_points_list[i][5]);
+                // waypoint.push_back(xml_points_list[i][6]);
+                // waypoint.push_back(xml_points_list[i][7]);
+                // waypoint.push_back(xml_points_list[i][8]);
+
+                waypoints_list.push_back(waypoint);
+
+                // if( xml_points_list[i].size() != 2 ) {
+                //     ROS_ERROR("waypoint_list[%d] is not a pair", i);
+                // } else if( 
+                //     xml_points_list[i][0].getType() != XmlRpc::XmlRpcValue::TypeDouble ||
+                //     xml_points_list[i][1].getType() != XmlRpc::XmlRpcValue::TypeDouble ) {
+                //     ROS_ERROR("waypoint_list[%d] is not a pair of doubles", i);
+                // } else {
+                //     // sensor_msgs::NavSatFix g;
+                //     // g.latitude = xml_points_list[i][0];
+                //     // g.longitude = xml_points_list[i][1];
+                //     // goals->push_back(g);
+                // }
+            }
+        }
+    }
+
+
+    for (const auto & line : waypoints_list) {
+        for(const auto & value : line) {
+            std::cout << " - " << value;
+
+        }
+        std::cout << std::endl;
+        // ROS_INFO("YAML Parsed? %s", line);
+    }
+
+
 
     // move_group_interface::MGI_BoatPlanner hardcoded_3d_cb();
   
