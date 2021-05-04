@@ -67,10 +67,11 @@ void MGI_BoatPlanner::initialize()
   // rc_sub_ = nh_.subscribe("/rviz_visual_tools_gui", 10, &MGI_AprilTag::rc_cb, this);
   // targetpose_2d_sub_ = nh_.subscribe("/rviz_2d_nav_goal", 10, &MGI_AprilTag::targetpose_2d_cb, this);
   // targetpoint_3d_sub_ = nh_.subscribe("/rviz_clicked_point", 10, &MGI_AprilTag::targetpoint_3d_cb, this);
+  // targetpoint_3d_sub_ = nh_.subscribe("/waypoint_goal", 10, &MGI_AprilTag::targetpoint_3d_cb, this);
 
   ROS_INFO_STREAM_NAMED(move_group::NODE_NAME, "Setup complete!");
 
-  hardcoded_3d_cb();
+  // hardcoded_3d_cb();
 }
 
 
@@ -150,6 +151,24 @@ void MGI_BoatPlanner::hardcoded_3d_cb() {
 
   arm_reach();
 }
+
+
+
+// void MGI_BoatPlanner::move_base(move_base_msgs::MoveBaseGoal goal) {
+//   MoveBaseClient ac("move_base", true);
+//   while(!ac.waitForServer(ros::Duration(5.0))) {
+//     ROS_INFO("Waiting for the move_base action server to come up");
+//   }
+//   // move_base_msgs::MoveBaseGoal goal;
+//   ac.sendGoal(goal);
+// 
+//   ac.waitForResult();
+// 
+//   if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+//     ROS_INFO("move base goal success");
+//   else
+//     ROS_INFO("The base failed to move for some reason");
+// }
 
 
 
