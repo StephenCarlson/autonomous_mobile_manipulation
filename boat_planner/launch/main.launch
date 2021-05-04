@@ -1,10 +1,14 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="robot_namespace" default=""/>
-  <arg name="arm_namespace" default=""/>
-  <arg name="sim_suffix" default=""/>
-  <arg name="VIO_enabled" default="true"/>
+  <arg name="robot_namespace" default="bvr_SIM"/>
+  <arg name="arm_namespace" default="main_arm_SIM"/> 
+  <arg name="sim_suffix" default="_SIM"/>
+  <arg name="VIO_enabled" default="false"/>
+  <arg name="tf_prefix" default=""/>
+  <arg name="kinematics_config" default="$(find robowork_ur_launch)/etc/bvr_main_arm_ex-ur5e-0_calibration.yaml"/>
+  <arg name="hosting_robot_prefix" default="bvr_SIM/"/> 
+  <arg name="ur5_e_robot_prefix" default="main_arm_SIM/"/> 
 
   <arg name="debug" default="false" />
 
