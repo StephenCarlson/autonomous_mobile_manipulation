@@ -322,12 +322,12 @@ int main(int argc, char* argv[]) {
                 waypoint.push_back(xml_points_list[i][0]);
                 waypoint.push_back(xml_points_list[i][1]);
                 waypoint.push_back(xml_points_list[i][2]);
-                // waypoint.push_back(xml_points_list[i][3]);
-                // waypoint.push_back(xml_points_list[i][4]);
-                // waypoint.push_back(xml_points_list[i][5]);
-                // waypoint.push_back(xml_points_list[i][6]);
-                // waypoint.push_back(xml_points_list[i][7]);
-                // waypoint.push_back(xml_points_list[i][8]);
+                waypoint.push_back(xml_points_list[i][3]);
+                waypoint.push_back(xml_points_list[i][4]);
+                waypoint.push_back(xml_points_list[i][5]);
+                waypoint.push_back(xml_points_list[i][6]);
+                waypoint.push_back(xml_points_list[i][7]);
+                waypoint.push_back(xml_points_list[i][8]);
 
                 waypoints_list.push_back(waypoint);
             }
@@ -370,6 +370,7 @@ int main(int argc, char* argv[]) {
 
         goal_base.target_pose.pose.position.x = line[0];
         goal_base.target_pose.pose.position.y = line[1];
+        // goal_base.target_pose.pose. (heading) line[2];
         // tf::Quaternion quat_b =  armToBaseOrientation(base_pose);
         // goal_base.target_pose.pose.orientation.x = quat_b.x();
         // goal_base.target_pose.pose.orientation.y = quat_b.y();
@@ -396,21 +397,19 @@ int main(int argc, char* argv[]) {
         geometry_msgs::PoseStamped target_pose;
         target_pose.header.frame_id = "map";
         target_pose.header.stamp = ros::Time::now();
-        target_pose.pose.position.x    = line[2]; 
-        target_pose.pose.position.y    = line[3]; 
-        target_pose.pose.position.z    = line[4]; 
-        target_pose.pose.orientation.x = line[5]; 
-        target_pose.pose.orientation.y = line[6]; 
-        target_pose.pose.orientation.z = line[7]; 
-        target_pose.pose.orientation.w = line[8]; 
+        target_pose.pose.position.x    = line[3]; 
+        target_pose.pose.position.y    = line[4]; 
+        target_pose.pose.position.z    = line[5]; 
+        // target_pose.pose.orientation.x = line[6]; 
+        // target_pose.pose.orientation.y = line[7]; 
+        // target_pose.pose.orientation.z = line[8]; 
+        target_pose.pose.orientation.w = 1.0f; // line[9]; 
 
         moveit::planning_interface::MoveGroupInterface::Plan my_plan;
         move_group_->setStartState(*move_group_->getCurrentState());
-        // goal_pose.pose = arm_pose.pose;
-        // goal_pose.header.stamp = ros::Time::now();
-        // goal_pose.header.frame_id = "map";
         move_group_->setGoalOrientationTolerance(0.23);
         move_group_->setGoalPositionTolerance(0.05);
+        ROS_INFO_STREAM("Attempting moving Arm to goal: "<< target_pose.pose);
         move_group_->setPoseTarget(target_pose); // goal_pose
         // visual_tools.publishArrow(goal_pose.pose,rviz_visual_tools::colors::YELLOW,rviz_visual_tools::scales::XLARGE);
         // visual_tools.trigger();
@@ -421,6 +420,7 @@ int main(int argc, char* argv[]) {
             // ROS_INFO_STREAM("plan success for arm pose" << arm_pose);
             // visual_tools.prompt("Found solution Press 'next'to execute trajectory");
             // moveit::planning_interface::MoveItErrorCode exec_success = move_group_->execute(my_plan);
+            
             move_group_->execute(my_plan);
             // move_group_->asyncExecute(my_plan);
             // ROS_INFO_STREAM("execution success message #"<< exec_success.val);
