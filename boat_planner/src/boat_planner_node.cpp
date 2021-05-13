@@ -12,9 +12,6 @@
 #include <moveit_msgs/DisplayRobotState.h>
 #include <moveit_msgs/DisplayTrajectory.h>
 
-// #include <moveit_msgs/AttachedCollisionObject.h>
-// #include <moveit_msgs/CollisionObject.h>
-
 #include <moveit_visual_tools/moveit_visual_tools.h>
 #include <sensor_msgs/Joy.h>
 #include <tf/transform_listener.h>
@@ -32,7 +29,7 @@ std::unique_ptr<moveit::planning_interface::MoveGroupInterface> move_group_;
 std::unique_ptr<planning_scene_monitor::PlanningSceneMonitor> planning_scene_monitor_;
 std::unique_ptr<moveit::planning_interface::PlanningSceneInterface> planning_scene_interface_;
 std::unique_ptr<tf::TransformListener> tf_listener_;
-// std::unique_ptr<MoveBaseClient> ac;
+
 
 const robot_state::JointModelGroup* joint_model_group_;
 
@@ -61,60 +58,8 @@ void move_base( move_base_msgs::MoveBaseGoal goal)
 
 int main(int argc, char* argv[]) {
     ros::init(argc, argv, "boat_planner_node");
-    
-    // ros::NodeHandle nh; // Public Node Handle
-    // ros::NodeHandle nh_;
-    // ros::NodeHandle private_nh_;
-    // std::string robot_namespace;
-    // private_nh_.getParam("robot_namespace", robot_namespace);
-    // std::string arm_namespace;
-    // private_nh_.getParam("arm_namespace", arm_namespace);
-    // tf_listener_ = std::make_unique<tf::TransformListener>();
-    // // Setup Visualization
-    // visual_tools_ = std::make_unique<moveit_visual_tools::MoveItVisualTools>(robot_namespace + "/bvr_base_link");
-    // visual_tools_->deleteAllMarkers();
-
-
-    // ros::AsyncSpinner spinner(2); // TODO: Examples have 1, but move_group fails with: "Didn't received robot state (joint angles) with recent timestamp within 1 seconds." (see: https://github.com/ros-planning/moveit/issues/868)
-    // spinner.start();
-
-    
-    // ros::NodeHandle pnh("~");
-
-    // move_group_interface::MGI_AprilTag move_group_interface_AprilTag(nh, pnh, "map");
-  
-    // ros::waitForShutdown();
-
 
     ROS_INFO("boat_planner is properly compiled if this message is visible.");
-
-    // http://wiki.ros.org/navigation/Tutorials/SendingSimpleGoals
-
-
-
-    // ros::Subscriber base_sub;
-    // ros::Subscriber arm_sub;
-
-    // typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
-    // MoveBaseClient ac("move_base", true);
-    // while(!ac.waitForServer(ros::Duration(5.0))) {
-    //     ROS_INFO("Waiting for the move_base action server to come up");
-    // }
-    // move_base_msgs::MoveBaseGoal goal;
-    // goal.target_pose.header.frame_id = "bvr_SIM/move_base";
-    // goal.target_pose.header.stamp = ros::Time::now();
-    // goal.target_pose.pose.position.x = 1.0;
-    // goal.target_pose.pose.orientation.w = 1.0;
-    // ROS_INFO("Sending goal");
-    // ac.sendGoal(goal);
-    // ac.waitForResult();
-    // if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) {
-    //     ROS_INFO("Test movement succeeded");
-    // } else {
-    //     ROS_INFO("Test movement failed");
-    // }
-
-    // ros::spin();
 
 
     // Hopefully this is as good as any place to put the instructions:
@@ -135,78 +80,6 @@ int main(int argc, char* argv[]) {
 
     ros::NodeHandle nh;
     ros::NodeHandle pnh("~");
-
-    // move_group_interface::MGI_BoatPlanner move_group_interface_BoatPlanner(nh, pnh, "map");
-
-
-
-
-
-
-    // PLANNING_GROUP_ = "main_arm_SIM";
-    // std::string robot_namespace = "bvr_SIM";
-    // std::string arm_namespace = "main_arm_SIM";
-    // // node_handle.getParam("robot_namespace", robot_namespace);
-    // // node_handle.getParam("arm_namespace", arm_namespace);
-    // std::string bvr_base_interia_frame = robot_namespace+"/bvr_base_inertia";
-    // std::string gripper_link = robot_namespace + "/main_arm_SIM/gripper_manipulation_link";
-    // move_group_ = std::make_unique<moveit::planning_interface::MoveGroupInterface>(PLANNING_GROUP_);
-    // planning_scene_interface_ = std::make_unique<moveit::planning_interface::PlanningSceneInterface>();
-    // /* Create a RobotState and JointModelGroup to keep track of the current robot pose and planning group*/
-    // robot_model::RobotModelConstPtr robot_model_ = move_group_->getRobotModel();
-    // robot_state::RobotStatePtr robot_state_(new robot_state::RobotState(robot_model_));
-    // joint_model_group_ = robot_state_->getJointModelGroup(PLANNING_GROUP_);
-// 
-    // // planning_scene::PlanningScenePtr planning_scene_(new planning_scene::PlanningScene(robot_model_));
-    // // robot_model_loader::RobotModelLoader robot_model_loader_("bvr_SIM/robot_description");
-    // planning_scene_monitor_ = std::make_unique<planning_scene_monitor::PlanningSceneMonitor>("bvr_SIM/robot_description");
-    // planning_scene::PlanningScenePtr planning_scene_ = planning_scene_monitor_->getPlanningScene();
-    // bool success = planning_scene_monitor_->requestPlanningSceneState("get_planning_scene");
-    // ROS_INFO_STREAM("Request planning scene " << (success ? "succeeded." : "failed."));
-    // //
-    // planning_scene_monitor_->startSceneMonitor("move_group/monitored_planning_scene");
-    // planning_scene_monitor_->startStateMonitor();
-    // planning_scene_monitor_->triggerSceneUpdateEvent(planning_scene_monitor::PlanningSceneMonitor::SceneUpdateType::UPDATE_STATE);
-    // boost::scoped_ptr<pluginlib::ClassLoader<planning_interface::PlannerManager>> planner_plugin_loader;
-    // moveit_msgs::MotionPlanRequest req;
-    // req.group_name = PLANNING_GROUP_;
-    // moveit_msgs::MotionPlanResponse res;
-    // planning_interface::PlannerManagerPtr planner_instance;
-    // std::string planner_plugin_name;
-// 
-    // if (!node_handle.getParam("planning_plugin", planner_plugin_name))
-    // ROS_FATAL_STREAM("Could not find planner plugin name");
-    // try
-    // {
-    //     planner_plugin_loader.reset(new pluginlib::ClassLoader<planning_interface::PlannerManager>(
-    //         "moveit_core", "planning_interface::PlannerManager"));
-    // }
-    // catch (pluginlib::PluginlibException& ex)
-    // {
-    //     ROS_FATAL_STREAM("Exception while creating planning plugin loader " << ex.what());
-    // }
-    // try
-    // {
-    //     planner_instance.reset(planner_plugin_loader->createUnmanagedInstance(planner_plugin_name));
-    //     if (!planner_instance->initialize(robot_model_, node_handle.getNamespace()))
-    //     ROS_FATAL_STREAM("Could not initialize planner instance");
-    //     ROS_INFO_STREAM("Using planning interface '" << planner_instance->getDescription() << "'");
-    // }
-    // catch (pluginlib::PluginlibException& ex)
-    // {
-    //     const std::vector<std::string>& classes = planner_plugin_loader->getDeclaredClasses();
-    //     std::stringstream ss;
-    //     for (std::size_t i = 0; i < classes.size(); ++i)
-    //     ss << classes[i] << " ";
-    //     ROS_ERROR_STREAM("Exception while loading planner '" << planner_plugin_name << "': " << ex.what() << std::endl
-    //                                                         << "Available plugins: " << ss.str());
-    // }
-
-
-
-
-
-
 
     std::string robot_namespace = "bvr_SIM";
     std::string arm_namespace = "main_arm_SIM";
@@ -248,40 +121,6 @@ int main(int argc, char* argv[]) {
 
 
     // std::map<std::string,std::string> planner_params = move_group_->getPlannerParams(move_group_->getPlannerId(), PLANNING_GROUP_);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
