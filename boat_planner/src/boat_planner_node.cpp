@@ -210,12 +210,15 @@ int main(int argc, char* argv[]) {
         goal_base.target_pose.pose.position.x = line[0];
         goal_base.target_pose.pose.position.y = line[1];
         // goal_base.target_pose.pose. (heading) line[2];
-        // tf::Quaternion quat_b =  armToBaseOrientation(base_pose);
-        // goal_base.target_pose.pose.orientation.x = quat_b.x();
-        // goal_base.target_pose.pose.orientation.y = quat_b.y();
-        // goal_base.target_pose.pose.orientation.z = quat_b.z();
+        tf::Quaternion quat_b =  tf::Quaternion(tf::Vector3(0,0,1), (float)line[2]);
+        goal_base.target_pose.pose.orientation.x = quat_b.x();
+        goal_base.target_pose.pose.orientation.y = quat_b.y();
+        goal_base.target_pose.pose.orientation.z = quat_b.z();
+        goal_base.target_pose.pose.orientation.w = quat_b.w();
         goal_base.target_pose.header.stamp = ros::Time::now();
-        goal_base.target_pose.pose.orientation.w = 1.0f;
+        // goal_base.target_pose.pose.orientation.z = math.sin(line[2]); 
+        // goal_base.target_pose.pose.orientation.w = math.cos(line[2]); 
+        // // goal_base.target_pose.pose.orientation.w = 1.0f;
         goal_base.target_pose.header.frame_id = "map";
         ROS_INFO_STREAM("Moving Base to goal: "<< goal_base.target_pose.pose);
         // visual_tools.publishArrow(goal_base.target_pose.pose,rviz_visual_tools::colors::RED,rviz_visual_tools::scales::LARGE);
@@ -232,39 +235,47 @@ int main(int argc, char* argv[]) {
         // geometry_msgs::PoseStamped arm_pose = curr_pose;
 
         // geometry_msgs::PoseStamped arm_pose = tf::Stamped<tf::Pose>(tf::Pose(tf::Quaternion(0,0,0,1), tf::Point(1,0,0.5)), ros::Time::now(), "map");
+        
+        if(line.size()==9){
 
-        geometry_msgs::PoseStamped target_pose;
-        target_pose.header.frame_id = "map";
-        target_pose.header.stamp = ros::Time::now();
-        target_pose.pose.position.x    = line[3]; 
-        target_pose.pose.position.y    = line[4]; 
-        target_pose.pose.position.z    = line[5]; 
-        // target_pose.pose.orientation.x = line[6]; 
-        // target_pose.pose.orientation.y = line[7]; 
-        // target_pose.pose.orientation.z = line[8]; 
-        target_pose.pose.orientation.w = 1.0f; // line[9]; 
+            geometry_msgs::PoseStamped target_pose;
+            target_pose.header.frame_id = "map";
+            target_pose.header.stamp = ros::Time::now();
+            target_pose.pose.position.x    = line[3]; 
+            target_pose.pose.position.y    = line[4]; 
+            target_pose.pose.position.z    = line[5]; 
+            // target_pose.pose.orientation.x = line[6]; 
+            // target_pose.pose.orientation.y = line[7]; 
+            // target_pose.pose.orientation.z = line[8]; 
+            // target_pose.pose.orientation.x = 0.0f; // math.sin(line[6]); 
+            // target_pose.pose.orientation.y = 0.0f; // math.sin(line[7]); 
+            // target_pose.pose.orientation.z = math.sin(line[2]); 
+            // target_pose.pose.orientation.w = math.cos(line[2]); 
+            target_pose.pose.orientation.w = 1.0f;
 
-        moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-        move_group_->setStartState(*move_group_->getCurrentState());
-        move_group_->setGoalOrientationTolerance(0.23);
-        move_group_->setGoalPositionTolerance(0.05);
-        ROS_INFO_STREAM("Attempting moving Arm to goal: "<< target_pose.pose);
-        move_group_->setPoseTarget(target_pose); // goal_pose
-        // visual_tools.publishArrow(goal_pose.pose,rviz_visual_tools::colors::YELLOW,rviz_visual_tools::scales::XLARGE);
-        // visual_tools.trigger();
-        // visual_tools.deleteAllMarkers();
-        bool success = (move_group_->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-        if(success)
-        {
-            // ROS_INFO_STREAM("plan success for arm pose" << arm_pose);
-            // visual_tools.prompt("Found solution Press 'next'to execute trajectory");
-            // moveit::planning_interface::MoveItErrorCode exec_success = move_group_->execute(my_plan);
-            
-            move_group_->execute(my_plan);
-            // move_group_->asyncExecute(my_plan);
-            // ROS_INFO_STREAM("execution success message #"<< exec_success.val);
+        
+            moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+            move_group_->setStartState(*move_group_->getCurrentState());
+            move_group_->setGoalOrientationTolerance(0.23);
+            move_group_->setGoalPositionTolerance(0.05);
+            ROS_INFO_STREAM("Attempting moving Arm to goal: "<< target_pose.pose);
+            move_group_->setPoseTarget(target_pose); // goal_pose
+            // visual_tools.publishArrow(goal_pose.pose,rviz_visual_tools::colors::YELLOW,rviz_visual_tools::scales::XLARGE);
+            // visual_tools.trigger();
+            // visual_tools.deleteAllMarkers();
+            bool success = (move_group_->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+            if(success)
+            {
+                // ROS_INFO_STREAM("plan success for arm pose" << arm_pose);
+                // visual_tools.prompt("Found solution Press 'next'to execute trajectory");
+                // moveit::planning_interface::MoveItErrorCode exec_success = move_group_->execute(my_plan);
+                
+                move_group_->execute(my_plan);
+                // move_group_->asyncExecute(my_plan);
+                // ROS_INFO_STREAM("execution success message #"<< exec_success.val);
+            }
+
         }
-
         // else
         // {
         //     move_group_->setGoalOrientationTolerance(0.449066);
