@@ -21,6 +21,9 @@
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseArray.h>
 
+#include <trajectory_msgs/JointTrajectoryPoint.h>
+// #include <trajectory_msgs/JointTrajectory.h>
+
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
@@ -204,11 +207,46 @@ int main(int argc, char* argv[]) {
     geometry_msgs::PoseStamped goal_pose = curr_pose;
 
     // std::vector<double> prevMoveBase;
+    double previousPositionX = 0.0f;
 
     for (const auto & line : waypoints_list) {
 
+        // hosting_robot_prefix = "bvr_SIM/"
+        // ur5_e_robot_prefix = "main_arm_SIM/"
+        // ur5e_arm_prefix = hosting_robot_prefix + ur5_e_robot_prefix
+        // ur5e_arm_controller_topic = ur5_e_robot_prefix + "velocity_controller/follow_joint_trajectory"
+        // trajectory_msgs::JointTrajectoryPoint
+
         goal_base.target_pose.pose.position.x = line[0];
         goal_base.target_pose.pose.position.y = line[1];
+
+
+        if(std::abs(previousPositionX - goal_base.target_pose.pose.position.x) > 0.1f) {
+            previousPositionX = goal_base.target_pose.pose.position.x;
+
+            ROS_INFO_STREAM("Homing the Arm");
+            geometry_msgs::PoseStamped target_pose;
+            target_pose.header.frame_id = "map";
+            target_pose.header.stamp = ros::Time::now();
+            target_pose.pose.position.x    = goal_base.target_pose.pose.position.x;
+            target_pose.pose.position.y    = goal_base.target_pose.pose.position.y;
+            target_pose.pose.position.z    = 1.0f;
+            // target_pose.pose.orientation   = goal_base.target_pose.pose.orientation;
+            target_pose.pose.orientation.w = 1.0f;
+
+            moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+
+            move_group_->setStartState(*move_group_->getCurrentState());
+            move_group_->setGoalOrientationTolerance(0.33);
+            move_group_->setGoalPositionTolerance(0.1);
+            move_group_->setPoseTarget(target_pose);
+            bool success = (move_group_->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+            if(success) move_group_->execute(my_plan);
+        }
+
+
+
+
         // goal_base.target_pose.pose. (heading) line[2];
         tf::Quaternion quat_b =  tf::Quaternion(tf::Vector3(0,0,1), (float)line[2]);
         goal_base.target_pose.pose.orientation.x = quat_b.x();
@@ -247,11 +285,12 @@ int main(int argc, char* argv[]) {
             // target_pose.pose.orientation.x = line[6]; 
             // target_pose.pose.orientation.y = line[7]; 
             // target_pose.pose.orientation.z = line[8]; 
-            // target_pose.pose.orientation.x = 0.0f; // math.sin(line[6]); 
-            // target_pose.pose.orientation.y = 0.0f; // math.sin(line[7]); 
-            // target_pose.pose.orientation.z = math.sin(line[2]); 
-            // target_pose.pose.orientation.w = math.cos(line[2]); 
-            target_pose.pose.orientation.w = 1.0f;
+            // target_pose.pose.orientation = tf::Quaternion(tf::Vector3((double)line[6],(double)line[7],(double)line[8]), 0.0f);
+            tf::Quaternion eff_pose = tf::Quaternion(tf::Vector3((double)line[6],(double)line[7],(double)line[8]), 1.57f);
+            target_pose.pose.orientation.x = eff_pose.x();
+            target_pose.pose.orientation.y = eff_pose.y();
+            target_pose.pose.orientation.z = eff_pose.z();
+            target_pose.pose.orientation.w = eff_pose.w();
 
         
             moveit::planning_interface::MoveGroupInterface::Plan my_plan;
@@ -274,6 +313,9 @@ int main(int argc, char* argv[]) {
                 // move_group_->asyncExecute(my_plan);
                 // ROS_INFO_STREAM("execution success message #"<< exec_success.val);
             }
+
+
+            
 
         }
         // else
