@@ -207,7 +207,7 @@ int main(int argc, char* argv[]) {
     geometry_msgs::PoseStamped goal_pose = curr_pose;
 
     // std::vector<double> prevMoveBase;
-    double previousPositionX = 0.0f;
+    double previousGoalX = 0.0f;
 
     for (const auto & line : waypoints_list) {
 
@@ -217,19 +217,22 @@ int main(int argc, char* argv[]) {
         // ur5e_arm_controller_topic = ur5_e_robot_prefix + "velocity_controller/follow_joint_trajectory"
         // trajectory_msgs::JointTrajectoryPoint
 
-        goal_base.target_pose.pose.position.x = line[0];
-        goal_base.target_pose.pose.position.y = line[1];
+        // goal_base.target_pose.pose.position.x = line[0];
+        // goal_base.target_pose.pose.position.y = line[1];
 
 
-        if(std::abs(previousPositionX - goal_base.target_pose.pose.position.x) > 0.1f) {
-            previousPositionX = goal_base.target_pose.pose.position.x;
+        if(std::abs(previousGoalX - goal_base.target_pose.pose.position.x) > 0.1f)
+        {
+            previousGoalX = goal_base.target_pose.pose.position.x;
 
-            ROS_INFO_STREAM("Homing the Arm");
+            // ROS_INFO_STREAM("Homing the Arm");
+            double basePostionX = goal_base.target_pose.pose.position.x;    // robot_state_->getFrameTransform(robot_namespace).translation().x();
+            double basePostionY = goal_base.target_pose.pose.position.y;    // robot_state_->getFrameTransform(robot_namespace).translation().y();
             geometry_msgs::PoseStamped target_pose;
             target_pose.header.frame_id = "map";
             target_pose.header.stamp = ros::Time::now();
-            target_pose.pose.position.x    = goal_base.target_pose.pose.position.x;
-            target_pose.pose.position.y    = goal_base.target_pose.pose.position.y;
+            target_pose.pose.position.x    = basePostionX; // move_group_->getCurrentPose().pose.position.x;
+            target_pose.pose.position.y    = basePostionY; // goal_base.target_pose.pose.position.y;
             target_pose.pose.position.z    = 1.0f;
             // target_pose.pose.orientation   = goal_base.target_pose.pose.orientation;
             target_pose.pose.orientation.w = 1.0f;
@@ -240,15 +243,20 @@ int main(int argc, char* argv[]) {
             move_group_->setGoalOrientationTolerance(0.33);
             move_group_->setGoalPositionTolerance(0.1);
             move_group_->setPoseTarget(target_pose);
+            ROS_INFO_STREAM("Homing the Arm: "<< target_pose.pose);
             bool success = (move_group_->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
             if(success) move_group_->execute(my_plan);
         }
 
 
+        goal_base.target_pose.pose.position.x = line[0];
+        goal_base.target_pose.pose.position.y = line[1];
+
+
 
 
         // goal_base.target_pose.pose. (heading) line[2];
-        tf::Quaternion quat_b =  tf::Quaternion(tf::Vector3(0,0,1), (float)line[2]);
+        tf::Quaternion quat_b =  tf::Quaternion(tf::Vector3(0,0,1), line[2]);
         goal_base.target_pose.pose.orientation.x = quat_b.x();
         goal_base.target_pose.pose.orientation.y = quat_b.y();
         goal_base.target_pose.pose.orientation.z = quat_b.z();
@@ -279,14 +287,30 @@ int main(int argc, char* argv[]) {
             geometry_msgs::PoseStamped target_pose;
             target_pose.header.frame_id = "map";
             target_pose.header.stamp = ros::Time::now();
-            target_pose.pose.position.x    = line[3]; 
-            target_pose.pose.position.y    = line[4]; 
-            target_pose.pose.position.z    = line[5]; 
+            tf::Vector3 targetPoint     = tf::Vector3(line[3],line[4],line[5]);
+            tf::Vector3 directionVector = tf::Vector3(line[6],line[7],line[8]);
+            const double SURFACE_OFFSET = 0.05; // Offset 5cm from surface to avoid scrubbing the end effector.
+            target_pose.pose.position.x    = targetPoint.x() + SURFACE_OFFSET * directionVector.x();
+            target_pose.pose.position.y    = targetPoint.y() + SURFACE_OFFSET * directionVector.y();
+            target_pose.pose.position.z    = targetPoint.z() + SURFACE_OFFSET * directionVector.z();
             // target_pose.pose.orientation.x = line[6]; 
             // target_pose.pose.orientation.y = line[7]; 
             // target_pose.pose.orientation.z = line[8]; 
-            // target_pose.pose.orientation = tf::Quaternion(tf::Vector3((double)line[6],(double)line[7],(double)line[8]), 0.0f);
-            tf::Quaternion eff_pose = tf::Quaternion(tf::Vector3((double)line[6],(double)line[7],(double)line[8]), 1.57f);
+            // target_pose.pose.orientation = tf::Quaternion(tf::Vector3(line[6],line[7],line[8]), 0.0f);
+            ROS_INFO_STREAM("Vector: "<< line[6] << "," << line[7] << "," << line[8]);
+            double roll = 0.0f;
+            double pitch = std::asin(line[8]);
+            double yaw = std::atan2(-line[7],-line[6]);
+            ROS_INFO_STREAM("RPY: "<< roll << "," << pitch << "," << yaw);
+            // tf::Quaternion eff_pose = tf::Quaternion(line[6], line[7], line[8]); // 1.57,0,0 is effector down PRY?
+            // tf::Vector3 axis = tf::tfCross(tf::Vector3(line[6],line[7],line[8]),tf::Vector3(0.0f,0.0f,1.0f));
+            // double angle = -0.7f;
+            tf::Quaternion eff_pose; // = tf::Quaternion(axis, angle);
+            eff_pose.setRPY(roll, pitch, yaw);
+            
+            
+            // tf::Quaternion eff_pose = tf::Quaternion(yaw, pitch, roll);
+            // tf::Quaternion eff_pose = tf::Quaternion(tf::Vector3(line[6],line[7],line[8]), 1.57f);
             target_pose.pose.orientation.x = eff_pose.x();
             target_pose.pose.orientation.y = eff_pose.y();
             target_pose.pose.orientation.z = eff_pose.z();
@@ -340,6 +364,9 @@ int main(int argc, char* argv[]) {
 
 
     }
+
+
+    ROS_INFO_STREAM("Waypoints Finished");
 
 
 
